@@ -164,8 +164,8 @@ sendBtn.onclick=async ()=>{
         })
     })
 
-    messageArea.removeChild(typing)
     const data=await response.json()
+    typing.remove()
     if (!response.ok) {
         throw new Error(data.message || "Unable to send message")
     }
@@ -173,7 +173,7 @@ sendBtn.onclick=async ()=>{
 
 } catch (error) {
     console.log(error)
-    messageArea.removeChild(typing)
+    typing.remove()
     addMessage(error.message || "Something went wrong", "ai")
 }
 }
