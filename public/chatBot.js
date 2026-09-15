@@ -1,8 +1,7 @@
 (function () {
 
-    const apiUrl = "https://support-ai-tau.vercel.app/api/chat"
-
     const scriptTag = document.currentScript;
+    const apiUrl = new URL("/api/chat", scriptTag.src).toString()
     const ownerId = scriptTag.getAttribute("data-owner-id")
 
     if (!ownerId) {
