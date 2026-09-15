@@ -19,6 +19,34 @@ function jsonWithCors(body: unknown, init?: ResponseInit) {
     });
 }
 
+function isTemporaryAiError(error: unknown) {
+    const details = error as { status?: number | string; statusText?: string; message?: string };
+    const serialized = error instanceof Error ? error.message : JSON.stringify(error);
+    return details.status === 503
+        || details.status === "UNAVAILABLE"
+        || details.statusText === "UNAVAILABLE"
+        || details.message?.includes("503")
+        || serialized?.includes('"code":503')
+        || serialized?.includes("UNAVAILABLE");
+}
+
+async function generateReply(ai: GoogleGenAI, prompt: string) {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+            return await ai.models.generateContent({
+                model: "gemini-3.6-flash",
+                contents: prompt,
+            });
+        } catch (error) {
+            if (!isTemporaryAiError(error) || attempt === 2) {
+                throw error;
+            }
+            await new Promise((resolve) => setTimeout(resolve, 1500 * (attempt + 1)));
+        }
+    }
+    throw new Error("AI reply unavailable");
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { message, ownerId } = await req.json()
@@ -69,17 +97,17 @@ ANSWER
 `;
 
 const ai = new GoogleGenAI({apiKey:process.env.GEMINI_API_KEY});
- const res = await ai.models.generateContent({
-    model: "gemini-3.6-flash",
-    contents: prompt,
-  });
+ const res = await generateReply(ai, prompt);
 
 return jsonWithCors(res.text)
 
     } catch (error) {
+ const temporary = isTemporaryAiError(error);
  const response= jsonWithCors(
-                { message:`chat error ${error}` },
-                { status: 500 }
+                                { message: temporary
+                                        ? "Our support service is busy right now. Please try again in a moment."
+                                        : "We could not generate a reply right now. Please try again." },
+                                { status: temporary ? 503 : 500 }
             )
     return response
     }

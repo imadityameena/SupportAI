@@ -167,7 +167,7 @@ sendBtn.onclick=async ()=>{
     const data=await response.json()
     typing.remove()
     if (!response.ok) {
-        throw new Error(data.message || "Unable to send message")
+        throw new Error(data.message || "We could not generate a reply right now. Please try again.")
     }
     addMessage(typeof data === "string" ? data : data.message, "ai")
 
