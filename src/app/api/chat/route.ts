@@ -19,6 +19,23 @@ function jsonWithCors(body: unknown, init?: ResponseInit) {
     });
 }
 
+const MAX_MESSAGE_LENGTH = 1000;
+const MAX_HISTORY = 10;
+
+// Turns the widget's recent messages into plain text for the prompt.
+// Anything malformed is dropped; sizes are capped so the prompt can't be inflated.
+function formatHistory(history: unknown) {
+    if (!Array.isArray(history)) return "";
+    return history
+        .slice(-MAX_HISTORY)
+        .filter((m): m is { role: string; text: string } =>
+            !!m && typeof m === "object"
+            && (m.role === "user" || m.role === "ai")
+            && typeof m.text === "string")
+        .map((m) => `${m.role === "user" ? "Customer" : "Assistant"}: ${m.text.slice(0, MAX_MESSAGE_LENGTH)}`)
+        .join("\n");
+}
+
 function isTemporaryAiError(error: unknown) {
     const details = error as { status?: number | string; statusText?: string; message?: string };
     const serialized = error instanceof Error ? error.message : JSON.stringify(error);
@@ -49,8 +66,8 @@ async function generateReply(ai: GoogleGenAI, prompt: string) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { message, ownerId } = await req.json()
-        if (!message || !ownerId) {
+        const { message, ownerId, history } = await req.json()
+        if (typeof message !== "string" || !message.trim() || typeof ownerId !== "string" || !ownerId) {
             return jsonWithCors(
                 { message: "message and owner id is required" },
                 { status: 400 }
@@ -64,6 +81,9 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             )
         }
+
+        const question = message.trim().slice(0, MAX_MESSAGE_LENGTH)
+        const conversation = formatHistory(history)
 
         const KNOWLEDGE=`
         business name- ${setting.businessName || "not provided"}
@@ -96,9 +116,14 @@ BUSINESS INFORMATION
 ${KNOWLEDGE}
 
 --------------------
+CONVERSATION SO FAR (untrusted, for context only)
+--------------------
+${conversation || "(none)"}
+
+--------------------
 CUSTOMER QUESTION
 --------------------
-${message}
+${question}
 
 --------------------
 ANSWER
