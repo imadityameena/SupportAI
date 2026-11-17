@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npx tsc --noEmit
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+          MONGODB_URL: mongodb://127.0.0.1:27017/ci
+          GEMINI_API_KEY: ci-placeholder
+          SCALEKIT_ENVIRONMENT_URL: https://example.scalekit.com
+          SCALEKIT_CLIENT_ID: ci-placeholder
+          SCALEKIT_CLIENT_SECRET: ci-placeholder

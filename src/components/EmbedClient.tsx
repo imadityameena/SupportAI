@@ -1,26 +1,28 @@
 'use client'
-import { navigate } from 'next/dist/client/components/segment-cache/navigation'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import React, { useState } from 'react'
 import { motion } from "motion/react"
 function EmbedClient({ ownerId }: { ownerId: string }) {
-    const navigate = useRouter()
     const [copied, setCopied] = useState(false)
     const embedCode = `<script 
     src="${process.env.NEXT_PUBLIC_APP_URL}/chatBot.js" 
     data-owner-id="${ownerId}">
 </script> `
-    const copyCode = () => {
-        navigator.clipboard.writeText(embedCode)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
+    const copyCode = async () => {
+        try {
+            await navigator.clipboard.writeText(embedCode)
+            setCopied(true)
+            setTimeout(() => setCopied(false), 2000)
+        } catch {
+            // Clipboard can be blocked (e.g. non-HTTPS); the code is still selectable.
+        }
     }
     return (
         <div className='min-h-screen bg-zinc-50 text-zinc-900'>
             <div className='sticky top-0 z-40 bg-white border-b border-zinc-200'>
                 <div className='max-w-7xl mx-auto px-6 h-16 flex items-center justify-between'>
-                    <div className='text-lg font-semibold cursor-pointer' onClick={() => navigate.push("/")}>Support<span className='text-zinc-400'>AI</span></div>
-                    <button className='px-4 py-2 rounded-lg border border-zinc-300 text-sm hover:bg-zinc-100 transition' onClick={() => navigate.push("/dashboard")}>Back to Dashboard</button>
+                    <Link href="/" className='text-lg font-semibold'>Support <span className='text-zinc-400'>AI</span></Link>
+                    <Link href="/dashboard" className='px-4 py-2 rounded-lg border border-zinc-300 text-sm hover:bg-zinc-100 transition'>Back to Dashboard</Link>
                 </div>
             </div>
 
@@ -35,7 +37,7 @@ function EmbedClient({ ownerId }: { ownerId: string }) {
                     <p>Copy and paste this code before <code>&lt;/body&gt;</code></p>
                     <div className='relative bg-zinc-900 text-zinc-100 rounded-xl p-5 text-sm font-mono mb-10'>
                         <pre className='overflow-x-auto'>{embedCode}</pre>
-                        <button className='absolute top-3 right-3 bg-white text-zinc-900 text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-zinc-200 transition' onClick={copyCode}>
+                        <button type="button" className='absolute top-3 right-3 bg-white text-zinc-900 text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-zinc-200 transition' onClick={copyCode}>
                             {copied ? "Copied ✓" : "Copy"}
                         </button>
                     </div>
@@ -47,7 +49,7 @@ function EmbedClient({ ownerId }: { ownerId: string }) {
                     </ol>
 
                     <div className='mt-14'>
-                        <h1 className='text-lg font-medium mb-2'>Live Preview</h1>
+                        <h2 className='text-lg font-medium mb-2'>Live Preview</h2>
                         <p className='text-sm text-zinc-500 mb-6'>This is how the chatbot will appear on your website</p>
 
                         <div className='rounded-xl border border-zinc-300 bg-white shadow-md overflow-hidden'>
@@ -66,7 +68,7 @@ function EmbedClient({ ownerId }: { ownerId: string }) {
                                 <div className='absolute bottom-24 right-6 w-64 bg-white rounded-xl shadow-xl border border-zinc-200 overflow-hidden'>
                                     <div className='bg-black text-white text-xs px-3 py-2 flex justify-between items-center'>
                                         <span>Customer Support</span>
-                                        <span>╳</span>
+                                        <span aria-hidden="true">╳</span>
                                     </div>
 
                                     <div className='p-3 space-y-2 bg-zinc-50'>

@@ -35,7 +35,7 @@ Install dependencies:
 npm install
 ```
 
-Create a `.env.local` file in the project root:
+Copy `.env.example` to `.env.local` in the project root and fill in the values:
 
 ```env
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -78,6 +78,8 @@ The generated snippet has this shape:
 
 The widget sends customer messages to `/api/chat` with the business owner ID. The API only uses the corresponding saved settings when generating a reply.
 
+The owner ID in the snippet is public, but it only lets visitors chat. Settings can only be read or changed by the signed-in owner. Chat requests are rate limited per IP and per owner (see `.env.example`). The limiter is in-memory, so on multi-instance or serverless deployments use a shared store such as Redis for hard limits.
+
 ## Application routes
 
 | Route                | Purpose                                       |
@@ -87,10 +89,9 @@ The widget sends customer messages to `/api/chat` with the business owner ID. Th
 | `/embed`             | Generate the widget script and view a preview |
 | `/api/auth/login`    | Start Scalekit authentication                 |
 | `/api/auth/callback` | Complete authentication                       |
-| `/api/auth/logout`   | End the current session                       |
-| `/api/chat`          | Generate a support response                   |
-| `/api/settings`      | Save business settings                        |
-| `/api/settings/get`  | Read business settings                        |
+| `/api/auth/logout`   | End the current session (`POST`)              |
+| `/api/chat`          | Generate a support response (rate limited)    |
+| `/api/settings`      | `GET` / `POST` the signed-in owner's settings |
 
 ## Scripts
 

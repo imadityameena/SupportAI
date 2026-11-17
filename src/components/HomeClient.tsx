@@ -1,11 +1,10 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from "motion/react"
-import axios from 'axios'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 
-function HomeClient({ email }: { email: string }) {
+function HomeClient({ email }: { email: string | null }) {
 
     const [loading,setLoading]=useState(false)
     const handleLogin = () => {
@@ -24,7 +23,6 @@ function HomeClient({ email }: { email: string }) {
         document.addEventListener("mousedown", handler)
         return () => document.removeEventListener("mousedown", handler)
     }, [])
-const navigate=useRouter()
     const features = [
         {
             title: "Plug & Play",
@@ -39,12 +37,11 @@ const navigate=useRouter()
             desc: "Your customers get instant support 24/7."
         }
     ]
-    const handleLogOut=async ()=>{
+    const handleLogOut = async () => {
         try {
-            const result=await axios.get("/api/auth/logout")
+            await fetch("/api/auth/logout", { method: "POST" })
+        } finally {
             window.location.href = "/"
-        } catch (error) {
-            console.log(error)
         }
     }
 
@@ -65,6 +62,8 @@ const navigate=useRouter()
                   font-semibold
                   hover:scale-105 transition'
                             onClick={() => setOpen(!open)}
+                            aria-label='Account menu'
+                            aria-expanded={open}
                         >{firstLetter}</button>
                         <AnimatePresence>
                             {open && (
@@ -77,8 +76,8 @@ const navigate=useRouter()
                       shadow-xl border border-zinc-200
                       overflow-hidden'
                                 >
-                                    <button className='w-full text-left px-4 py-3 text-sm hover:bg-zinc-100' onClick={()=>navigate.push("/dashboard")}>Dashboard</button>
-                                    <button className='block px-4 py-3 text-sm text-red-600 hover:bg-zinc-100' onClick={handleLogOut}>Logout</button>
+                                    <Link href="/dashboard" className='block w-full text-left px-4 py-3 text-sm hover:bg-zinc-100'>Dashboard</Link>
+                                    <button className='block w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-zinc-100' onClick={handleLogOut}>Logout</button>
                                 </motion.div>)}
                         </AnimatePresence>
 
@@ -114,10 +113,9 @@ const navigate=useRouter()
                         </p>
                         <div className='mt-10 flex gap-4'>
 
-                            {email ? <button className=' px-7 py-3 rounded-xl
+                            {email ? <Link href="/dashboard" className=' px-7 py-3 rounded-xl
                     bg-black text-white font-medium
-                    hover:bg-zinc-800 transition
-                    disabled:opacity-60' onClick={()=>navigate.push("/dashboard")}>Go to Dashboard</button> : <button className=' px-7 py-3 rounded-xl
+                    hover:bg-zinc-800 transition'>Go to Dashboard</Link> : <button className=' px-7 py-3 rounded-xl
                     bg-black text-white font-medium
                     hover:bg-zinc-800 transition
                     disabled:opacity-60'
@@ -170,7 +168,7 @@ const navigate=useRouter()
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: false }}
+                        viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
                         className='text-3xl font-semibold text-center'
                     >
@@ -180,18 +178,18 @@ const navigate=useRouter()
                     <div className='mt-16 grid grid-cols-1 md:grid-cols-3 gap-10'>
                         {features.map((f, index) => (
                             <motion.div
-                                key={index}
+                                key={f.title}
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                viewport={{ once: false }}
+                                viewport={{ once: true }}
                                 className="
                   bg-white rounded-2xl
                   p-8 shadow-lg
                   border border-zinc-200
                 "
                             >
-                     <h1 className='text-lg font-medium'>{f.title}</h1>
+                     <h3 className='text-lg font-medium'>{f.title}</h3>
                      <p className='mt-3 text-zinc-600 text-sm'>{f.desc}</p>
                             </motion.div>
                         ))}

@@ -1,15 +1,13 @@
 import EmbedClient from '@/components/EmbedClient'
 import { getSession } from '@/lib/getSession'
-import React from 'react'
+import { redirect } from 'next/navigation'
 
-async function page() {
-    const session=await getSession()
+export default async function EmbedPage() {
+  const session = await getSession()
+  const ownerId = session?.id
+  if (!ownerId) {
+    redirect("/")
+  }
 
-  return (
-    <>
-      <EmbedClient ownerId={session?.user?.id!}/>
-    </>
-  )
+  return <EmbedClient ownerId={ownerId} />
 }
-
-export default page
