@@ -1,2 +1,12 @@
 @import "tailwindcss";
 
+
+/* Hero entrance: transform only, so the headline is visible (and counts for LCP) on first paint. */
+@keyframes hero-in {
+  from { transform: translateY(24px); }
+  to   { transform: translateY(0); }
+}
+.hero-in { animation: hero-in 0.6s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-in { animation: none; }
+}

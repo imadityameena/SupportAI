@@ -98,11 +98,9 @@ function HomeClient({ email }: { email: string | null }) {
             </motion.div>
             <section className='pt-36 pb-28 px-6'>
                 <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center'>
-                    <motion.div
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.7 }}
-                    >
+                    {/* Visible in the server HTML (no opacity:0), so the headline paints
+                        before JS loads. Only the position animates, via CSS. */}
+                    <div className='hero-in'>
                         <h1 className='text-4xl md:text-5xl font-semibold leading-tight'>
                             AI Customer Support <br />
                             Built for Modern Websites
@@ -128,7 +126,7 @@ function HomeClient({ email }: { email: string | null }) {
                   hover:bg-zinc-100 transition'>Learn More</a>
                         </div>
 
-                    </motion.div>
+                    </div>
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
