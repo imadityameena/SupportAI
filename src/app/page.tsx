@@ -86,7 +86,7 @@ function WidgetExample() {
     <figure className="mx-auto w-full max-w-sm">
       <div className="overflow-hidden rounded-xl border border-line-strong bg-card shadow-[0_16px_40px_-20px_rgb(23_25_28/0.35)]">
         <div className="flex items-center gap-3 bg-ink px-4 py-3 text-paper">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold">BB</span>
+          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bright text-xs font-semibold text-white">BB</span>
           <div className="leading-tight">
             <p className="text-sm font-medium">BrewBean Café</p>
             <p className="text-[11px] text-paper/65">Usually replies in a few seconds</p>
@@ -94,16 +94,16 @@ function WidgetExample() {
         </div>
         <div className="space-y-2 bg-paper p-3.5 text-[13.5px] leading-snug">
           <p className="w-fit max-w-[85%] rounded-lg bg-card px-3 py-2 ring-1 ring-line">Hi! How can we help?</p>
-          <p className="ml-auto w-fit max-w-[85%] rounded-lg bg-ink px-3 py-2 text-paper">is cash on delivery available?</p>
+          <p className="ml-auto w-fit max-w-[85%] rounded-lg bg-accent px-3 py-2 text-white">is cash on delivery available?</p>
           <p className="w-fit max-w-[85%] rounded-lg bg-card px-3 py-2 ring-1 ring-line">
             Yes, you can pay cash on delivery. We also accept UPI and cards.
           </p>
-          <p className="ml-auto w-fit max-w-[85%] rounded-lg bg-ink px-3 py-2 text-paper">what time do you close today</p>
+          <p className="ml-auto w-fit max-w-[85%] rounded-lg bg-accent px-3 py-2 text-white">what time do you close today</p>
           <p className="w-fit max-w-[85%] rounded-lg bg-card px-3 py-2 ring-1 ring-line">We&apos;re open until 10pm today.</p>
         </div>
         <div className="flex gap-2 border-t border-line p-2.5">
           <span className="flex-1 rounded-md border border-line-strong px-3 py-2 text-xs text-faint">Type your question…</span>
-          <span className="rounded-md bg-ink px-3 py-2 text-xs font-medium text-paper">Send</span>
+          <span className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-white">Send</span>
         </div>
       </div>
       <figcaption className="mt-3 text-center text-xs text-faint">The chat as your customers see it, in the corner of your site.</figcaption>
@@ -168,7 +168,7 @@ export default async function Home({
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <StartLink
                 signedIn={signedIn}
-                className="rounded-md bg-ink px-5 py-3 text-sm font-medium text-paper hover:bg-ink-soft"
+                className="rounded-md bg-accent px-5 py-3 text-sm font-medium text-white hover:bg-accent-hover"
               />
               <a href="#example" className="text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
                 See how it answers

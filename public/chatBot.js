@@ -34,16 +34,16 @@
       .launcher {
         position: fixed; bottom: 24px; right: 24px;
         width: 56px; height: 56px; border-radius: 50%;
-        border: none; background: #141414; color: #f7f7f5;
+        border: none; background: #0b6e6e; color: #fff;
         display: flex; align-items: center; justify-content: center;
         cursor: pointer;
-        box-shadow: 0 14px 34px -8px rgba(20,20,20,0.5);
+        box-shadow: 0 14px 34px -8px rgba(15,29,32,0.5);
         transition: transform .15s ease, background .15s ease;
         z-index: 2147483000;
       }
-      .launcher:hover { transform: scale(1.05); background: #2b2b2b; }
+      .launcher:hover { transform: scale(1.05); background: #085959; }
       .launcher:focus-visible, .close:focus-visible, .send:focus-visible, .input:focus-visible {
-        outline: 2px solid #cc3a1e; outline-offset: 2px;
+        outline: 2px solid #2a9d8f; outline-offset: 2px;
       }
 
       .box {
@@ -51,8 +51,8 @@
         width: 360px; max-width: calc(100vw - 32px);
         height: 520px; max-height: calc(100vh - 120px);
         background: #fff; border-radius: 12px;
-        border: 1px solid #e5e5e1;
-        box-shadow: 0 24px 60px -18px rgba(20,20,20,0.4);
+        border: 1px solid #dfe6e6;
+        box-shadow: 0 24px 60px -18px rgba(15,29,32,0.4);
         display: none; flex-direction: column; overflow: hidden;
         z-index: 2147483000;
         transform-origin: bottom right;
@@ -66,26 +66,26 @@
       }
 
       .header {
-        background: #141414; color: #f7f7f5; padding: 12px 12px 12px 16px;
+        background: #0f1d20; color: #f4f7f7; padding: 12px 12px 12px 16px;
         display: flex; justify-content: space-between; align-items: center; gap: 10px;
       }
       .identity { display: flex; align-items: center; gap: 10px; min-width: 0; }
       .avatar {
         width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
-        background: #cc3a1e; color: #fff; font-size: 12px; font-weight: 600;
+        background: #2a9d8f; color: #fff; font-size: 12px; font-weight: 600;
         display: flex; align-items: center; justify-content: center;
       }
       .title { font-size: 14px; font-weight: 600; line-height: 1.2; }
-      .subtitle { font-size: 11px; color: rgba(247,247,245,0.7); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+      .subtitle { font-size: 11px; color: rgba(244,247,247,0.7); display: flex; align-items: center; gap: 6px; margin-top: 2px; }
       .close {
-        background: none; border: none; color: rgba(247,247,245,0.75);
+        background: none; border: none; color: rgba(244,247,247,0.75);
         cursor: pointer; width: 32px; height: 32px; border-radius: 8px;
         display: flex; align-items: center; justify-content: center;
       }
       .close:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
       .messages {
-        flex: 1; padding: 14px; overflow-y: auto; background: #f7f7f5;
+        flex: 1; padding: 14px; overflow-y: auto; background: #f4f7f7;
         display: flex; flex-direction: column; gap: 8px;
       }
       .bubble {
@@ -95,33 +95,33 @@
         animation: rise .2s ease-out;
       }
       @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-      .bubble.user { align-self: flex-end; background: #141414; color: #f7f7f5; border-bottom-right-radius: 3px; }
-      .bubble.ai { align-self: flex-start; background: #fff; color: #141414; border: 1px solid #e5e5e1; border-bottom-left-radius: 3px; }
+      .bubble.user { align-self: flex-end; background: #0b6e6e; color: #fff; border-bottom-right-radius: 3px; }
+      .bubble.ai { align-self: flex-start; background: #fff; color: #0f1d20; border: 1px solid #dfe6e6; border-bottom-left-radius: 3px; }
       .bubble.error { background: #fdecea; color: #b42318; border-color: rgba(180,35,24,0.2); }
 
       .typing {
         align-self: flex-start; display: flex; gap: 4px;
-        padding: 12px 14px; background: #fff; border: 1px solid #e5e5e1;
+        padding: 12px 14px; background: #fff; border: 1px solid #dfe6e6;
         border-radius: 10px; border-bottom-left-radius: 3px;
       }
-      .typing span { width: 6px; height: 6px; border-radius: 50%; background: #8d8d89; animation: blink 1.2s infinite; }
+      .typing span { width: 6px; height: 6px; border-radius: 50%; background: #86979a; animation: blink 1.2s infinite; }
       .typing span:nth-child(2) { animation-delay: .15s; }
       .typing span:nth-child(3) { animation-delay: .3s; }
       @keyframes blink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
 
-      .composer { display: flex; border-top: 1px solid #e5e5e1; padding: 10px; gap: 8px; background: #fff; }
+      .composer { display: flex; border-top: 1px solid #dfe6e6; padding: 10px; gap: 8px; background: #fff; }
       .input {
         flex: 1; min-width: 0; padding: 10px 12px;
-        border: 1px solid #d0d0cb; border-radius: 8px;
-        font-size: 14px; outline: none; color: #141414; background: #fff;
+        border: 1px solid #c5d1d2; border-radius: 8px;
+        font-size: 14px; outline: none; color: #0f1d20; background: #fff;
       }
-      .input:focus { border-color: #cc3a1e; }
+      .input:focus { border-color: #0b6e6e; }
       .send {
-        padding: 0 16px; border: none; background: #141414; color: #f7f7f5;
+        padding: 0 16px; border: none; background: #0b6e6e; color: #fff;
         border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer;
       }
       .send:disabled { opacity: 0.4; cursor: not-allowed; }
-      .footer { text-align: center; font-size: 10px; color: #8d8d89; padding: 0 0 8px; background: #fff; }
+      .footer { text-align: center; font-size: 10px; color: #86979a; padding: 0 0 8px; background: #fff; }
 
       @media (prefers-reduced-motion: reduce) {
         .box.open, .bubble, .typing span { animation: none; }

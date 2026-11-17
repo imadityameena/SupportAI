@@ -4,12 +4,12 @@ export function LogoMark({ className = "" }: { className?: string }) {
     return (
         <span
             aria-hidden="true"
-            className={`relative inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-ink text-paper ${className}`}
+            className={`relative inline-flex h-8 w-8 items-center justify-center rounded-[10px] bg-accent text-white ${className}`}
         >
             <svg viewBox="0 0 24 24" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z" />
             </svg>
-            <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-paper bg-accent" />
+            <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-paper bg-sun" />
         </span>
     );
 }

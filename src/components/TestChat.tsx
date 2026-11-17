@@ -57,7 +57,7 @@ export default function TestChat({
         <section aria-labelledby="test-chat-title" className="flex h-[min(640px,calc(100vh-7rem))] min-h-120 flex-col overflow-hidden rounded-lg border border-line bg-card">
             <div className="flex items-center justify-between gap-3 bg-ink px-4 py-3 text-paper">
                 <div className="flex items-center gap-3">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-xs font-semibold uppercase">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-bright text-xs font-semibold uppercase text-white">
                         {name.slice(0, 2)}
                     </span>
                     <div className="leading-tight">
@@ -101,7 +101,7 @@ export default function TestChat({
                         <p
                             key={i}
                             className={`rise-in w-fit max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 leading-snug ${m.role === "user"
-                                ? "ml-auto rounded-br-sm bg-ink text-paper"
+                                ? "ml-auto rounded-br-sm bg-accent text-white"
                                 : m.error
                                     ? "rounded-bl-sm bg-danger-soft text-danger ring-1 ring-danger/20"
                                     : "rounded-bl-sm bg-card text-ink ring-1 ring-line"}`}
@@ -134,7 +134,7 @@ export default function TestChat({
                 <button
                     type="submit"
                     disabled={sending || !input.trim()}
-                    className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-paper transition hover:bg-ink-soft disabled:opacity-40"
+                    className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-accent-hover disabled:opacity-40"
                 >
                     Send
                 </button>

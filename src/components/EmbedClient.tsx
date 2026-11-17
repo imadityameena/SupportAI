@@ -144,7 +144,7 @@ export default function EmbedClient({ ownerId }: { ownerId: string }) {
                         <div className="relative h-100 bg-paper p-5">
                             <div className="absolute bottom-20 left-4 right-4 overflow-hidden rounded-lg border border-line bg-card shadow-xl">
                                 <div className="flex items-center gap-2.5 bg-ink px-3.5 py-2.5 text-paper">
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-[10px] font-semibold">AI</span>
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-bright text-[10px] text-white font-semibold">AI</span>
                                     <div className="leading-tight">
                                         <p className="text-[13px] font-medium">Customer support</p>
                                         <p className="text-[10px] text-paper/65">Usually replies in a few seconds</p>
@@ -152,15 +152,15 @@ export default function EmbedClient({ ownerId }: { ownerId: string }) {
                                 </div>
                                 <div className="space-y-2 bg-paper/60 p-3 text-xs">
                                     <p className="w-fit max-w-[85%] rounded-lg rounded-bl-sm bg-card px-3 py-2 ring-1 ring-line">Hi! How can we help?</p>
-                                    <p className="ml-auto w-fit max-w-[85%] rounded-lg rounded-br-sm bg-ink px-3 py-2 text-paper">What is your return policy?</p>
+                                    <p className="ml-auto w-fit max-w-[85%] rounded-lg rounded-br-sm bg-accent px-3 py-2 text-white">What is your return policy?</p>
                                     <p className="w-fit max-w-[85%] rounded-lg rounded-bl-sm bg-card px-3 py-2 ring-1 ring-line">You can return any item within 7 days for a full refund.</p>
                                 </div>
                                 <div className="flex gap-2 border-t border-line p-2.5">
                                     <span className="flex-1 rounded-lg border border-line-strong px-2.5 py-1.5 text-[11px] text-faint">Type your question…</span>
-                                    <span className="rounded-lg bg-ink px-3 py-1.5 text-[11px] text-paper">Send</span>
+                                    <span className="rounded-lg bg-accent px-3 py-1.5 text-[11px] text-white">Send</span>
                                 </div>
                             </div>
-                            <span className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-paper shadow-lg">
+                            <span className="absolute bottom-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white shadow-lg">
                                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z" />
                                 </svg>
