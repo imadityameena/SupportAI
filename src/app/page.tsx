@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import BusinessCount, { BusinessCountSkeleton } from "@/components/BusinessCount";
 import Logo from "@/components/Logo";
 import UserMenu from "@/components/UserMenu";
 import LoginLink from "@/components/LoginLink";
@@ -173,6 +175,12 @@ export default async function Home({
               <a href="#example" className="text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 hover:decoration-ink">
                 See how it answers
               </a>
+            </div>
+            {/* Streams in separately so the count never delays the headline. */}
+            <div className="mt-8 min-h-8.5">
+              <Suspense fallback={<BusinessCountSkeleton />}>
+                <BusinessCount />
+              </Suspense>
             </div>
           </div>
           <WidgetExample />
