@@ -3,6 +3,8 @@ import type { NextResponse } from "next/server";
 export const ACCESS_TOKEN_COOKIE = "access_token";
 export const REFRESH_TOKEN_COOKIE = "refresh_token";
 export const OAUTH_STATE_COOKIE = "oauth_state";
+// Display-only profile (user id + email) so pages don't need a Scalekit API call to show the avatar.
+export const PROFILE_COOKIE = "profile";
 
 // Cookie maxAge is in SECONDS.
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -34,6 +36,23 @@ export function setAuthCookies(
 export function clearAuthCookies(res: NextResponse) {
     res.cookies.delete(ACCESS_TOKEN_COOKIE);
     res.cookies.delete(REFRESH_TOKEN_COOKIE);
+    res.cookies.delete(PROFILE_COOKIE);
+}
+
+// Never used for access decisions: the user id always comes from the verified access token.
+// The stored id only lets us ignore a profile left over from a different account.
+export function setProfileCookie(res: NextResponse, profile: { id: string; email: string }) {
+    res.cookies.set(PROFILE_COOKIE, JSON.stringify(profile), { ...baseCookie, maxAge: REFRESH_TOKEN_MAX_AGE });
+}
+
+export function readProfileCookie(value: string | undefined): { id: string; email: string } | null {
+    if (!value) return null;
+    try {
+        const parsed = JSON.parse(value);
+        return typeof parsed?.id === "string" && typeof parsed?.email === "string" ? parsed : null;
+    } catch {
+        return null;
+    }
 }
 
 export function setStateCookie(res: NextResponse, state: string) {

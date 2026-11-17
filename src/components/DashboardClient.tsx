@@ -41,10 +41,14 @@ function Field({ label, hint, htmlFor, children }: { label: string; hint?: strin
 
 const inputClass = "w-full rounded-md border border-line-strong bg-card px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-faint focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:bg-paper disabled:text-faint"
 
-export default function DashboardClient({ ownerId }: { ownerId: string }) {
-    const [fields, setFields] = useState<Fields>(EMPTY)
-    const [saved, setSaved] = useState<Fields>(EMPTY)
-    const [loaded, setLoaded] = useState(false)
+export type { Fields as SettingsFields }
+
+// initialSettings is loaded on the server with the page. If that failed (null),
+// the settings are fetched from the browser instead, showing a skeleton meanwhile.
+export default function DashboardClient({ ownerId, initialSettings }: { ownerId: string; initialSettings: Fields | null }) {
+    const [fields, setFields] = useState<Fields>(initialSettings ?? EMPTY)
+    const [saved, setSaved] = useState<Fields>(initialSettings ?? EMPTY)
+    const [loaded, setLoaded] = useState(initialSettings !== null)
     const [saving, setSaving] = useState(false)
     const [status, setStatus] = useState<Status>({ kind: "idle" })
 
@@ -52,6 +56,7 @@ export default function DashboardClient({ ownerId }: { ownerId: string }) {
     const isConfigured = !!(saved.businessName || saved.knowledge)
 
     useEffect(() => {
+        if (initialSettings !== null) return
         let cancelled = false
         const load = async () => {
             try {
@@ -78,7 +83,7 @@ export default function DashboardClient({ ownerId }: { ownerId: string }) {
         }
         load()
         return () => { cancelled = true }
-    }, [])
+    }, [initialSettings])
 
     // Warn before leaving the page with unsaved edits.
     useEffect(() => {

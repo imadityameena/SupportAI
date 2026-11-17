@@ -1,6 +1,6 @@
 import { timingSafeEqual } from "crypto";
 import { scalekit } from "@/lib/scalekit";
-import { OAUTH_STATE_COOKIE, setAuthCookies } from "@/lib/authCookies";
+import { OAUTH_STATE_COOKIE, setAuthCookies, setProfileCookie } from "@/lib/authCookies";
 import { NextRequest, NextResponse } from "next/server";
 
 function statesMatch(a: string | null | undefined, b: string | null | undefined) {
@@ -24,8 +24,12 @@ export async function GET(req: NextRequest) {
 
     try {
         const session = await scalekit.authenticateWithCode(code, `${appUrl}/api/auth/callback`);
-        const res = NextResponse.redirect(`${appUrl}`);
+        // Signed in: go straight to the dashboard.
+        const res = NextResponse.redirect(`${appUrl}/dashboard`);
         setAuthCookies(res, session);
+        if (session.user?.id) {
+            setProfileCookie(res, { id: session.user.id, email: session.user.email ?? "" });
+        }
         res.cookies.delete(OAUTH_STATE_COOKIE);
         return res;
     } catch (error) {
