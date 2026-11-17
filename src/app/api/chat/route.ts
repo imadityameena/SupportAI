@@ -21,10 +21,16 @@ function jsonWithCors(body: unknown, init?: ResponseInit) {
 }
 
 const MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+// Used when the main model is overloaded, slow or unavailable.
+const FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || "gemini-flash-lite-latest";
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_HISTORY = 10;
-const ATTEMPT_TIMEOUT_MS = 15_000;
-const TOTAL_DEADLINE_MS = 25_000;
+// Gemini can be slow under load; leave each attempt plenty of time.
+const ATTEMPT_TIMEOUT_MS = 25_000;
+const TOTAL_DEADLINE_MS = 55_000;
+
+// Let Vercel run this function long enough for the retries above.
+export const maxDuration = 60;
 
 // Abuse limits (per server instance, see lib/rateLimit.ts).
 const PER_IP_PER_MINUTE = Number(process.env.CHAT_LIMIT_PER_IP_PER_MINUTE) || 15;
@@ -89,17 +95,26 @@ function isTemporaryAiError(error: unknown) {
     const details = error as { status?: number | string; name?: string; message?: string };
     if (details.name === "AbortError" || details.name === "TimeoutError") return true;
     if (typeof details.status === "number" && RETRYABLE_STATUS.has(details.status)) return true;
+    // The SDK wraps timeouts as a plain Error whose message mentions "AbortError".
     const text = `${details.status ?? ""} ${details.message ?? ""}`;
-    return /\b(429|500|502|503|504)\b|UNAVAILABLE|RESOURCE_EXHAUSTED|DEADLINE_EXCEEDED/.test(text);
+    return /\b(429|500|502|503|504)\b|UNAVAILABLE|RESOURCE_EXHAUSTED|DEADLINE_EXCEEDED|AbortError|aborted|timed? ?out/i.test(text);
+}
+
+// A retired or renamed model (404) should also move on to the fallback model.
+function shouldTryNextModel(error: unknown) {
+    const status = (error as { status?: unknown })?.status;
+    return isTemporaryAiError(error) || status === 404;
 }
 
 async function generateReply(systemInstruction: string, contents: Content[]) {
     const deadline = Date.now() + TOTAL_DEADLINE_MS;
-    for (let attempt = 0; ; attempt += 1) {
+    // Main model first, then the fallback, then one more try of the main model.
+    const plan = [MODEL, FALLBACK_MODEL, MODEL];
+    for (let attempt = 0; attempt < plan.length; attempt += 1) {
         const remaining = deadline - Date.now();
         try {
             return await ai.models.generateContent({
-                model: MODEL,
+                model: plan[attempt],
                 contents,
                 config: {
                     systemInstruction,
@@ -107,13 +122,16 @@ async function generateReply(systemInstruction: string, contents: Content[]) {
                 },
             });
         } catch (error) {
-            const backoff = 1000 * 2 ** attempt;
-            if (!isTemporaryAiError(error) || attempt >= 2 || Date.now() + backoff + 2000 > deadline) {
+            console.warn(`[chat] ${plan[attempt]} failed (attempt ${attempt + 1})`, error instanceof Error ? error.message.slice(0, 200) : error);
+            const backoff = attempt === 0 ? 0 : 1000 * attempt;
+            const isLast = attempt === plan.length - 1;
+            if (!shouldTryNextModel(error) || isLast || Date.now() + backoff + 3000 > deadline) {
                 throw error;
             }
-            await new Promise((resolve) => setTimeout(resolve, backoff));
+            if (backoff) await new Promise((resolve) => setTimeout(resolve, backoff));
         }
     }
+    throw new Error("AI reply unavailable");
 }
 
 function tooManyRequests(retryAfterSeconds: number) {
