@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import TestChat from './TestChat'
+import { Skeleton, Spinner } from './Loading'
+import { SettingsFormSkeleton } from './PageSkeletons'
 
 type Fields = { businessName: string; supportEmail: string; knowledge: string }
 type Status = { kind: "idle" } | { kind: "saved" } | { kind: "error"; message: string }
@@ -126,6 +128,7 @@ export default function DashboardClient({ ownerId }: { ownerId: string }) {
                     <h1 className="text-3xl font-semibold tracking-tight">Bot settings</h1>
                     <p className="mt-1 text-muted">Everything your assistant knows comes from this page.</p>
                 </div>
+                {!loaded && <Skeleton className="h-6 w-28 rounded-full!" />}
                 {loaded && (
                     <span className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${isConfigured ? "bg-accent-soft text-accent-ink" : "bg-sun/20 text-ink-soft"}`}>
                         <span className={`h-1.5 w-1.5 rounded-full ${isConfigured ? "bg-accent" : "bg-sun"}`} />
@@ -136,6 +139,8 @@ export default function DashboardClient({ ownerId }: { ownerId: string }) {
 
             <div className="mt-8 grid items-start gap-6 lg:grid-cols-[1fr_380px]">
                 <form onSubmit={handleSave} className="space-y-6" aria-busy={!loaded}>
+                    {!loaded ? <SettingsFormSkeleton /> : (
+                    <>
                     <section className="rounded-lg border border-line bg-card p-5 sm:p-7">
                         <h2 className="font-semibold">Business details</h2>
                         <p className="mt-0.5 text-sm text-muted">Shown to customers and used when the bot can&apos;t answer.</p>
@@ -178,6 +183,8 @@ Refunds: wrong or damaged items are replaced or refunded within 24 hours.`}
                             {fields.knowledge.length.toLocaleString()} / {KNOWLEDGE_MAX.toLocaleString()}
                         </p>
                     </section>
+                    </>
+                    )}
 
                     <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-card/95 px-4 py-3 shadow-sm backdrop-blur sm:px-5">
                         <p role="status" aria-live="polite" className="text-sm">
@@ -196,8 +203,9 @@ Refunds: wrong or damaged items are replaced or refunded within 24 hours.`}
                             <button
                                 type="submit"
                                 disabled={saving || !loaded || !dirty}
-                                className="rounded-md bg-accent px-5 py-2 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2 text-sm font-medium text-white transition hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-40"
                             >
+                                {saving && <Spinner className="h-3.5 w-3.5" />}
                                 {saving ? "Saving…" : "Save changes"}
                             </button>
                         </div>

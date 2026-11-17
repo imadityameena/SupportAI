@@ -3,13 +3,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Logo from './Logo'
 import UserMenu from './UserMenu'
+import LinkPending from './LinkPending'
+import { Skeleton } from './Loading'
 
 const TABS = [
     { href: "/dashboard", label: "Bot settings" },
     { href: "/embed", label: "Install" },
 ]
 
-export default function AppHeader({ email }: { email: string }) {
+// email is undefined while a page is loading; the account button shows a placeholder.
+export default function AppHeader({ email }: { email?: string }) {
     const pathname = usePathname()
     return (
         <header className="sticky top-0 z-40 border-b border-line bg-paper/85 backdrop-blur-md">
@@ -24,15 +27,16 @@ export default function AppHeader({ email }: { email: string }) {
                                     key={t.href}
                                     href={t.href}
                                     aria-current={active ? "page" : undefined}
-                                    className={`rounded-lg px-3 py-1.5 text-sm transition ${active ? "bg-card font-medium text-ink shadow-sm ring-1 ring-line" : "text-muted hover:text-ink"}`}
+                                    className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition ${active ? "bg-card font-medium text-ink shadow-sm ring-1 ring-line" : "text-muted hover:text-ink"}`}
                                 >
                                     {t.label}
+                                    <LinkPending />
                                 </Link>
                             )
                         })}
                     </nav>
                 </div>
-                <UserMenu email={email} />
+                {email === undefined ? <Skeleton className="h-9 w-9 rounded-full!" /> : <UserMenu email={email} />}
             </div>
             {/* Mobile tabs */}
             <nav aria-label="App" className="flex gap-1 border-t border-line px-4 py-2 sm:hidden">
@@ -43,9 +47,10 @@ export default function AppHeader({ email }: { email: string }) {
                             key={t.href}
                             href={t.href}
                             aria-current={active ? "page" : undefined}
-                            className={`flex-1 rounded-lg px-3 py-1.5 text-center text-sm ${active ? "bg-card font-medium text-ink ring-1 ring-line" : "text-muted"}`}
+                            className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm ${active ? "bg-card font-medium text-ink ring-1 ring-line" : "text-muted"}`}
                         >
                             {t.label}
+                            <LinkPending />
                         </Link>
                     )
                 })}

@@ -1,9 +1,11 @@
 'use client'
 import Link from 'next/link'
 import { useEffect, useId, useRef, useState } from 'react'
+import { Spinner } from './Loading'
 
 export default function UserMenu({ email }: { email: string }) {
     const [open, setOpen] = useState(false)
+    const [loggingOut, setLoggingOut] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const menuId = useId()
     const initial = email ? email[0].toUpperCase() : "?"
@@ -53,9 +55,14 @@ export default function UserMenu({ email }: { email: string }) {
                             Install on your site
                         </Link>
                         {/* A real form POST: logout works even before JS loads. */}
-                        <form action="/api/auth/logout" method="post">
-                            <button type="submit" className="block w-full rounded-lg px-3 py-2 text-left text-danger hover:bg-danger-soft">
-                                Log out
+                        <form action="/api/auth/logout" method="post" onSubmit={() => setLoggingOut(true)}>
+                            <button
+                                type="submit"
+                                disabled={loggingOut}
+                                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-danger hover:bg-danger-soft disabled:opacity-70"
+                            >
+                                {loggingOut && <Spinner className="h-3.5 w-3.5" />}
+                                {loggingOut ? "Logging out…" : "Log out"}
                             </button>
                         </form>
                     </nav>

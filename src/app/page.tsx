@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
 import UserMenu from "@/components/UserMenu";
+import LoginLink from "@/components/LoginLink";
+import LinkPending from "@/components/LinkPending";
 import { getSession } from "@/lib/getSession";
 
 const EXAMPLE_KNOWLEDGE = `BrewBean Café, Andheri West, Mumbai
@@ -66,12 +68,16 @@ const FAQS = [
   },
 ];
 
-// Login goes through an API redirect, so it must be a plain <a>, not a client-side <Link>.
+// Login goes through an API redirect, so it's a plain <a> (LoginLink), not a client-side <Link>.
+// Both show a spinner while navigating.
 function StartLink({ signedIn, className }: { signedIn: boolean; className: string }) {
   return signedIn ? (
-    <Link href="/dashboard" className={className}>Go to your dashboard</Link>
+    <Link href="/dashboard" className={`${className} inline-flex items-center gap-2`}>
+      Go to your dashboard
+      <LinkPending />
+    </Link>
   ) : (
-    <a href="/api/auth/login" className={className}>Set up your bot</a>
+    <LoginLink className={className}>Set up your bot</LoginLink>
   );
 }
 
@@ -126,15 +132,16 @@ export default async function Home({
           </nav>
           {signedIn ? (
             <div className="flex items-center gap-3">
-              <Link href="/dashboard" className="hidden text-sm font-medium text-ink-soft hover:text-ink sm:inline">
+              <Link href="/dashboard" className="hidden items-center gap-1.5 text-sm font-medium text-ink-soft hover:text-ink sm:inline-flex">
                 Dashboard
+                <LinkPending />
               </Link>
               <UserMenu email={session.email} />
             </div>
           ) : (
-            <a href="/api/auth/login" className="rounded-md border border-line-strong bg-card px-4 py-2 text-sm font-medium text-ink hover:border-ink">
+            <LoginLink className="rounded-md border border-line-strong bg-card px-4 py-2 text-sm font-medium text-ink hover:border-ink">
               Log in
-            </a>
+            </LoginLink>
           )}
         </div>
       </header>
